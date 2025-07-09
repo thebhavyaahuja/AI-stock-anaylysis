@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Detective 🕵️‍♂️</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .loading {
+            display: none;
+        }
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-4">
+                    <i class="fas fa-search mr-3"></i>Financial Detective
+                </h1>
+                <p class="text-xl opacity-90">AI-Powered Stock Analysis & Screening</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Search Section -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                    <i class="fas fa-robot mr-2 text-blue-500"></i>Ask the Financial Detective
+                </h2>
+                
+                <div class="mb-6">
+                    <label for="naturalQuery" class="block text-sm font-medium text-gray-700 mb-2">
+                        Natural Language Query
+                    </label>
+                    <textarea 
+                        id="naturalQuery" 
+                        rows="3" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        placeholder="e.g., 'Find me large cap Indian technology stocks with good fundamentals'"
+                    ></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button 
+                        onclick="analyzeWithAI()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
+                    >
+                        <i class="fas fa-magic mr-2"></i>Analyze with AI
+                    </button>
+                </div>
+
+                <!-- Loading Animation -->
+                <div id="loading" class="loading text-center mt-6">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p class="text-gray-600 mt-2">Analyzing stocks...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Search Section -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                    <i class="fas fa-sliders-h mr-2 text-green-500"></i>Manual Screening
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="marketCap" class="block text-sm font-medium text-gray-700 mb-2">
+                            Minimum Market Cap (₹)
+                        </label>
+                        <input 
+                            type="number" 
+                            id="marketCap" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="e.g., 1000000000000"
+                        >
+                    </div>
+                    <div class="flex items-end">
+                        <button 
+                            onclick="runScreener()" 
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
+                        >
+                            <i class="fas fa-filter mr-2"></i>Run Screener
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="max-w-6xl mx-auto" style="display: none;">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-chart-line mr-2 text-purple-500"></i>Analysis Results
+                </h2>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+
+        <!-- Individual Stock Search -->
+        <div class="max-w-4xl mx-auto mt-12">
+            <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                    <i class="fas fa-search mr-2 text-red-500"></i>Individual Stock Analysis
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input 
+                        type="text" 
+                        id="stockTicker" 
+                        class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        placeholder="e.g., RELIANCE.NS"
+                    >
+                    <button 
+                        onclick="getStockFundamentals()" 
+                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+                    >
+                        <i class="fas fa-building mr-2"></i>Fundamentals
+                    </button>
+                    <button 
+                        onclick="getStockNews()" 
+                        class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+                    >
+                        <i class="fas fa-newspaper mr-2"></i>News
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Financial Detective. Built with FastAPI & AI.</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
